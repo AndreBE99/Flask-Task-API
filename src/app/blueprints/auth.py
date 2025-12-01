@@ -20,24 +20,46 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
-    user = User.query.filter_by(email=data["email"]).first()
-    if not user or not user.check_password(data["password"]):
+
+    # Validate fields
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"msg": "Email and password are required"}), 400
+
+    # Find user
+    user = User.query.filter_by(email=email).first()
+    if not user or not user.check_password(password):
         return jsonify({"msg": "Bad credentials"}), 401
 
-    access = create_access_token(identity=user.id)
-    refresh = create_refresh_token(identity=user.id)
-    # store jti in redis with expiry
-    jti = get_jwt()["jti"]  # incorrect here — create_refresh_token doesn't set current jwt
-    # Actually, decode the refresh token to get jti or use additional return from create_refresh_token?
-    # Simpler: use get_jti_from_token helper from flask_jwt_extended
+    # Create tokens
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
+
+    # Get jti from refresh token
     from flask_jwt_extended.utils import get_jti
-    jti_refresh = get_jti(refresh)
+    jti_refresh = get_jti(refresh_token)
+
+    # Save refresh token in Redis with expiration
     expires = current_app.config["JWT_REFRESH_TOKEN_EXPIRES"]
     current_app.redis_client.setex(f"refresh:{jti_refresh}", expires, user.id)
 
-    resp = jsonify({"access_token": access})
-    # attach refresh token as secure httpOnly cookie
-    set_refresh_cookies(resp, refresh)
+    # Create response
+    resp = jsonify({
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "username": user.username,
+            "role": user.role
+        }
+    })
+
+    # Send refresh token as HttpOnly secure cookie
+    set_refresh_cookies(resp, refresh_token)
+
     return resp, 200
 
 @auth_bp.route("/refresh", methods=["POST"])

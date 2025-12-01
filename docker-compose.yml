@@ -2,7 +2,6 @@ version: "3.8"
 services:
   web:
     build: .
-    command: gunicorn --bind 0.0.0.0:8000 src.wsgi:app
     volumes:
     - ./:/app
     env_file:
@@ -11,17 +10,17 @@ services:
     - "8000:8000"
     depends_on:
     - db
-    - redis
-
+    entrypoint: ["/entrypoint.sh"]
 
   db:
     image: postgres:15
     environment:
+      POSTGRES_DB: tasksdb
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports: ["5432:5432"]
     volumes:
-    - pgdata:/var/lib/postgresql/data
-
+      - pgdata:/var/lib/postgresql/data
 
   redis:
     image: redis:7
