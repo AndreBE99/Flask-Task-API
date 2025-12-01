@@ -1,0 +1,73 @@
+# Virtual environment
+.env
+
+# Dependencies
+__pycache__
+
+# IDE
+.idea
+.vscode
+
+# Docker
+.Dockerfile
+.dockerignore
+
+# Logs
+*.log
+
+# Database
+*.db
+
+# Testing
+.coverage
+.coverage.*
+htmlcov
+
+# Build
+build
+dist
+.eggs
+
+# Misc
+.venv
+.env
+
+# Editor
+.vscode
+.idea
+
+# System
+.DS_Store
+Thumbs.db
+
+# Docker
+.Dockerfile
+.dockerignore
+
+# Logs
+*.log
+
+# Database
+*.db
+
+# Testing
+.coverage
+.coverage.*
+htmlcov
+
+# Build
+build
+dist
+.eggs
+
+# Misc
+.venv
+.env
+
+# Editor
+.vscode
+.idea
+
+# System
+.DS_Store
+Thumbs.db

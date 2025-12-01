@@ -1,0 +1,11 @@
+Flask>=2.2
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-JWT-Extended
+Flask-Session
+redis
+psycopg2-binary
+python-dotenv
+pytest
+pytest-flask
+gunicorn
