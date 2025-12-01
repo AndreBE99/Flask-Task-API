@@ -1,11 +1,12 @@
 import os
 
 class BaseConfig:
-    SECRET_KEY = os.getenv("SECRET_KEY") or "dev"
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///data.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY") or "jwt-secret"
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "jwt-secret")
     JWT_ACCESS_TOKEN_EXPIRES = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRES", 900))
     JWT_REFRESH_TOKEN_EXPIRES = int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES", 2592000))
     SESSION_TYPE = os.getenv("SESSION_TYPE", "redis")
     SESSION_REDIS = None
+    TESTING = False
